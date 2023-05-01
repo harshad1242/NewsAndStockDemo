@@ -102,7 +102,6 @@ class DMApiManager: NSObject{
                 if (error != nil) {
                     print(error as Any)
                 } else {
-                    
                     responseHandler(true,data,response, error)
                     let httpResponse = response as? HTTPURLResponse
                     print(httpResponse)
@@ -110,6 +109,31 @@ class DMApiManager: NSObject{
             })
 
             dataTask.resume()
+            
+           /* let headers = [
+                "X-RapidAPI-Key": "687e40697amshc775c6f3eb207eap129f15jsn491b1c533c18",
+                "X-RapidAPI-Host": "alpha-vantage.p.rapidapi.com"
+            ]
+
+            let request = NSMutableURLRequest(url: NSURL(string: "https://alpha-vantage.p.rapidapi.com/query?interval=5min&function=TIME_SERIES_INTRADAY&symbol=MSFT&datatype=json&output_size=compact")! as URL,
+                                                    cachePolicy: .useProtocolCachePolicy,
+                                                timeoutInterval: 10.0)
+            request.httpMethod = "GET"
+            request.allHTTPHeaderFields = headers
+
+            let session = URLSession.shared
+            let dataTask = session.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) -> Void in
+                if (error != nil) {
+                    print(error as Any)
+                } else {
+                    
+                    responseHandler(true,data,response, error)
+                    let httpResponse = response as? HTTPURLResponse
+                    print(httpResponse)
+                }
+            })
+
+            dataTask.resume()*/
            
         }else{
             responseHandler(false,nil,nil,nil)

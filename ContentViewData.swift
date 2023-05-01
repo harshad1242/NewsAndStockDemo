@@ -54,7 +54,7 @@ class ContentViewData : ObservableObject{
     
     var webServiceObj = WebAPIServices()
     
-    @Published var isNewsActive = false
+    @Published var isNewsActive = true
     
     @Published var alertMessage = ""
     @Published var showLoaderView = false
@@ -213,72 +213,9 @@ class ContentViewData : ObservableObject{
                                         self.showAlertMsg = true
                                         return
                                     }
-                                    let getData : GetNewsEverything = try JSONDecoder().decode(GetNewsEverything.self, from : data)
+                                   // let getData : GetNewsEverything = try JSONDecoder().decode(GetNewsEverything.self, from : data)
 
-                                       guard let totalResults = getData.totalResults else {
-                                           
-                                           return
-                                       }
-                                       self.totalResultsInt = totalResults
                                        
-                                       guard let statusCode = getData.status else {
-                                           self.alertMessage = "Something went wrong. Your request is not completed."
-                                           self.showAlertMsg = true
-                                           return
-                                       }
-                                       if statusCode == "ok" {
-
-
-                                           self.newsFeeds = [GetNewsEverythingAPIDataRespAPIDataArticlesUI]()
-                                           
-                                              if let articles = getData.articles{
-
-                                                  for article in articles{
-                                                      
-                                                      
-                                                      var news = GetNewsEverythingAPIDataRespAPIDataArticlesUI()
-                                                        
-                                                        var source = GetNewsEverythingAPIDataArticlesSourceUI()
-                                                       
-                                                        source.id = article.source?.id ?? ""
-                                                        source.name = article.source?.name ?? ""
-                                                        news.source = source
-                                                       
-                                                      news.author = article.author ?? ""
-                                                      news.title = article.title ?? ""
-                                                      news.description = article.description ?? ""
-                                                      news.url = article.url ?? ""
-                                                      news.urlToImage = article.urlToImage ?? ""
-                                                      news.publishedAt = article.publishedAt ?? ""
-                                                      news.content = article.content ?? ""
-                                                       
-                                                      self.newsFeeds?.append(news)
-                                                  }
-                                               
-                                                  if self.newsFeeds != nil {
-                                                      
-                                                      if self.newsFeeds!.count > 10{
-                                                          
-                                                          for index in 0...10{
-                                                              
-                                                              self.onScrollnewsFeeds.append(self.newsFeeds![index])
-                                                          }
-                                                          
-                                                      }else{
-                                                          
-                                                          self.onScrollnewsFeeds = self.newsFeeds!
-                                                      }
-                                                      
-                                                  }
-                                                 
-                                                  
-                                                  self.onScroll = false
-                                           }
-
-                                       }else{
-                                           self.alertMessage = ""//flagWiseMessage(flagMessage: getData.message ?? "", msg: "")
-                                           self.showAlertMsg = true
-                                       }
 
                                    }
                                     catch let error as NSError{
@@ -292,6 +229,9 @@ class ContentViewData : ObservableObject{
                                    self.showAlertMsg = true
                                    return
                                default:
+                                   
+                                   self.showAlertMsg = true
+                                   self.alertMessage = err?.localizedDescription ?? "Something went wrong"
                                     print("httpResponse.statusCode = \(httpResponse.statusCode)")
                                    }
 

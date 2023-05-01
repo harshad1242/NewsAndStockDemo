@@ -228,7 +228,14 @@ struct ContentView: View {
                 }
             }
             else{
-                
+                if dataObj.showAlertMsg{
+                    VStack{
+                        Spacer()
+                        Text(dataObj.alertMessage).padding()
+                        Spacer()
+                    }
+                    
+                }
             }
            
             
