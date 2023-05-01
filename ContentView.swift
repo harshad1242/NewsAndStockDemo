@@ -90,7 +90,7 @@ struct ContentViewCell_Previews: PreviewProvider {
 struct ContentView: View {
     
     @StateObject var dataObj = ContentViewData()
-    @State var imgData = ImageLoader(urlString:"https://c.biztoc.com/p/0892332442d1440b/og.webp")
+   
     var body: some View {
         VStack {
             
@@ -101,106 +101,148 @@ struct ContentView: View {
                 Spacer()
                 Image(systemName: "globe.americas.fill")
             }.font(.title).padding().background(Color.red).foregroundColor(.white)
-            
+            HStack{
+                Spacer()
+                Button {
+                    dataObj.isNewsActive = true
+                    
+                    if dataObj.isNewsActive{
+                        dataObj.fetchNewsFeed()
+                    }else{
+                        dataObj.fetchStockMarket()
+                    }
+                } label: {
+                    Text("News")
+                }.padding(10).background( dataObj.isNewsActive ? Color.red : .white).foregroundColor(dataObj.isNewsActive ? Color.white : .red).cornerRadius(10)
+                Spacer()
+                
+                Button {
+                    dataObj.isNewsActive = false
+                    
+                    if dataObj.isNewsActive{
+                        dataObj.fetchNewsFeed()
+                    }else{
+                        dataObj.fetchStockMarket()
+                    }
+                } label: {
+                    Text("Stock Market")
+                }.padding(10).background( dataObj.isNewsActive ? Color.white : .red).foregroundColor(dataObj.isNewsActive ? Color.red : .white).cornerRadius(10)
+                Spacer()
+            }.padding(20).frame(width: SCREEN_WIDTH - 40).overlay(
+                RoundedRectangle(cornerRadius: 4)
+                    .stroke(Color(UIColor.red), lineWidth: 1)
+            )
            // HStack{
-            ScrollView{
-                LazyVStack{
-                    ForEach(dataObj.onScrollnewsFeeds) { obj in
-                        
-                        ContentViewCell(obj:obj).onAppear(){
+            
+            if dataObj.isNewsActive{
+                ScrollView{
+                    LazyVStack{
+                        ForEach(dataObj.onScrollnewsFeeds) { obj in
                             
-                            if dataObj.totalResultsInt != dataObj.onScrollnewsFeeds.count{
+                            ContentViewCell(obj:obj).onAppear(){
                                 
-                                if dataObj.totalResultsInt > dataObj.onScrollnewsFeeds.count{
+                                if dataObj.totalResultsInt != dataObj.onScrollnewsFeeds.count{
                                     
-                                    
-                                    if let i1 = dataObj.onScrollnewsFeeds.firstIndex(where: {$0.title == dataObj.onScrollnewsFeeds.last?.title}){
+                                    if dataObj.totalResultsInt > dataObj.onScrollnewsFeeds.count{
                                         
-                                        print("fetch index == \(i1)")
                                         
-                                        if let currentIndex = dataObj.onScrollnewsFeeds.firstIndex(where: {$0.title == obj.title}){
+                                        if let i1 = dataObj.onScrollnewsFeeds.firstIndex(where: {$0.title == dataObj.onScrollnewsFeeds.last?.title}){
                                             
+                                            print("fetch index == \(i1)")
                                             
-                                            print("currentIndex index == \(currentIndex)")
-                                            
-                                            if currentIndex - 2 == i1 - 2{
+                                            if let currentIndex = dataObj.onScrollnewsFeeds.firstIndex(where: {$0.title == obj.title}){
                                                 
-                                                print("Last index == \(currentIndex - 2)")
                                                 
-                                                self.dataObj.onScroll = true
-                                                Timer.scheduledTimer(withTimeInterval: 2, repeats: false, block: { (timer) in
-                                                   
-                                                    for index in 0...10{
-                                                                                                   
-                                                                                                   let position : Int = i1  + index
-                                                                                                   
-                                                                                                   
-                                                                                                   guard let newObj = self.dataObj.newsFeeds?[position] else{
-                                                                                                       return
+                                                print("currentIndex index == \(currentIndex)")
+                                                
+                                                if currentIndex - 2 == i1 - 2{
+                                                    
+                                                    print("Last index == \(currentIndex - 2)")
+                                                    
+                                                    self.dataObj.onScroll = true
+                                                    Timer.scheduledTimer(withTimeInterval: 2, repeats: false, block: { (timer) in
+                                                       
+                                                        for index in 0...10{
                                                                                                        
+                                                                                                       let position : Int = i1  + index
+                                                                                                       
+                                                                                                       
+                                                                                                       guard let newObj = self.dataObj.newsFeeds?[position] else{
+                                                                                                           return
+                                                                                                           
+                                                                                                       }
+                                                                                                       
+                                                                                                       self.dataObj.onScrollnewsFeeds.append(newObj)
                                                                                                    }
-                                                                                                   
-                                                                                                   self.dataObj.onScrollnewsFeeds.append(newObj)
-                                                                                               }
 
+                                                        
+                                                        
+                                                        self.dataObj.onScroll = false
+                                                    })
                                                     
                                                     
-                                                    self.dataObj.onScroll = false
-                                                })
-                                                
-                                                
+                                                }
                                             }
-                                        }
-                                       
-                                        
-                                        
-                                        if i1 - 2 == dataObj.onScrollnewsFeeds.count - 2{
+                                           
                                             
-                                            print("index == \(i1 - 2)")
+                                            
+                                            if i1 - 2 == dataObj.onScrollnewsFeeds.count - 2{
+                                                
+                                                print("index == \(i1 - 2)")
+                                            }
+                                            
+                                            
+                                            
+                                            
+                                            
                                         }
-                                        
-                                        
-                                        
-                                        
+
+                                       
+                                       
+                                       /* if let lastId = dataObj.vendorBillsList.last?.id{
+                                            
+                                            if lastId == obj.id{
+                                                
+                                                dataObj.pageIndex = dataObj.pageIndex + 1
+                                                
+                                                print("dataObj.pageIndex  \(dataObj.pageIndex)")
+                                                
+                                                dataObj.getAllVendorBillsByVendorCode(vendorCode: dataObj.selectedVendorCode)
+                                            }
+                                            
+                                        }*/
                                         
                                     }
-
-                                   
-                                   
-                                   /* if let lastId = dataObj.vendorBillsList.last?.id{
-                                        
-                                        if lastId == obj.id{
-                                            
-                                            dataObj.pageIndex = dataObj.pageIndex + 1
-                                            
-                                            print("dataObj.pageIndex  \(dataObj.pageIndex)")
-                                            
-                                            dataObj.getAllVendorBillsByVendorCode(vendorCode: dataObj.selectedVendorCode)
-                                        }
-                                        
-                                    }*/
-                                    
                                 }
                             }
                         }
                     }
                 }
-            }
-                
-            if dataObj.onScroll{
-                
-                VStack{
                     
-                    CircularActivityIndicatory().frame(width: 40,height: 40).opacity(dataObj.onScroll ? 0.9:0.0)
+                if dataObj.onScroll{
+                    
+                    VStack{
+                        
+                        CircularActivityIndicatory().frame(width: 40,height: 40).opacity(dataObj.onScroll ? 0.9:0.0)
+                    }
                 }
             }
+            else{
+                
+            }
+           
             
            // }
         Spacer()
         }
         .onAppear(){
             
-            dataObj.fetchNewsFeed()
+            if dataObj.isNewsActive{
+                dataObj.fetchNewsFeed()
+            }else{
+                dataObj.fetchStockMarket()
+            }
+           
         }
         
         
